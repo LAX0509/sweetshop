@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <h1 class="checkout-title">Tu Carrito</h1>
+  <p class="checkout-subtitle">Revisa tu pedido y completa los datos de envío y pago.</p>
+
+  {% if items %}
+  <div class="checkout-layout">
+
+    <section class="checkout-form">
+      <h2 class="h2">Datos de facturación y envío</h2>
+
+      <form action="{{ url_for('checkout') }}" method="post" class="form-grid">
+
+        <!-- Nombre -->
+        <div class="field">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="field">
+          <label for="telefono">Teléfono</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            required
+            inputmode="numeric"
+            pattern="\d{7,15}"
+            placeholder="3000000000">
+        </div>
+
+        <!-- Dirección -->
+        <div class="field span-2">
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" name="direccion" required placeholder="Calle, número, barrio, ciudad">
+        </div>
+
+        <!-- Correo -->
+        <div class="field span-2">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" name="correo" required placeholder="ejemplo@correo.com">
+        </div>
+
+        <!-- Ciudad -->
+        <div class="field">
+          <label for="ciudad">Ciudad</label>
+          <input type="text" id="ciudad" name="ciudad" placeholder="Medellín">
+        </div>
+
+        <!-- Código postal -->
+        <div class="field">
+          <label for="zip">Código postal</label>
+          <input type="text" id="zip" name="zip" placeholder="Opcional">
+        </div>
+
+        <div class="divider span-2"></div>
+
+        <h2 class="h2 span-2">Pago</h2>
+
+        <!-- Tarjeta -->
+        <div class="field span-2">
+          <label for="tarjeta">Número de tarjeta</label>
+          <input
+            type="text"
+            id="tarjeta"
+            name="tarjeta"
+            required
+            inputmode="numeric"
+            pattern="[0-9 ]{16,19}"
+            placeholder="1234 5678 9012 3456">
+          <div class="help">No se almacena la tarjeta. Validación simulada.</div>
+        </div>
+
+        <!-- Expiración -->
+        <div class="field">
+          <label for="exp">Expiración</label>
+          <input
+            type="text"
+            id="exp"
+            name="exp"
+            required
+            pattern="(0[1-9]|1[0-2])\/\d{2}"
+            placeholder="MM/AA">
+        </div>
+
+        <!-- CVV -->
+        <div class="field">
+          <label for="cvv">CVV</label>
+          <input
+            type="password"
+            id="cvv"
+            name="cvv"
+            required
+            inputmode="numeric"
+            pattern="\d{3,4}"
+            placeholder="123">
+        </div>
+
+        <div class="notice span-2">
+          Pago seguro simulado para Validación y Verificación.
+        </div>
+
+        <div class="actions span-2">
+          <button type="submit" class="btn-primary">Finalizar pedido</button>
+          <a href="{{ url_for('index') }}" class="btn-link">Volver a la tienda</a>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- Resumen -->
+    <aside class="basket">
+      <div class="basket-head">
+        <h2 class="h2">Resumen</h2>
+        <div class="basket-count">{{ items|length }}</div>
+      </div>
+
+      <div class="basket-list">
+        {% for item in items %}
+        <div class="basket-item">
+          <img class="basket-img" src="{{ item.img }}" alt="{{ item.name }}">
+
+          <div class="basket-info">
+            <div class="basket-name">{{ item.name }}</div>
+            <div class="basket-meta">$ {{ "%.2f"|format(item.price) }} c/u</div>
+
+            <div class="basket-qty">
+              <a class="qty-btn" href="{{ url_for('remove_one', p_id=item.id) }}">-</a>
+              <div class="qty-val">{{ item.qty }}</div>
+
+              <form method="post" action="{{ url_for('add_to_cart') }}" class="inline">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button class="qty-btn" type="submit">+</button>
+              </form>
+
+              <a class="qty-remove" href="{{ url_for('remove_item', p_id=item.id) }}">Eliminar</a>
+            </div>
+          </div>
+
+          <div class="basket-price">$ {{ "%.2f"|format(item.subtotal) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="basket-total">
+        <div class="total-row">
+          <span>Total</span>
+          <span class="total-val">$ {{ "%.2f"|format(total) }}</span>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  {% else %}
+  <div class="empty-card">
+    <div class="empty-emoji">🍬</div>
+    <div class="empty-title">Tu carrito está vacío</div>
+    <div class="empty-text">Aún no has añadido productos.</div>
+    <a href="{{ url_for('index') }}" class="btn-primary">Volver a la tienda</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+

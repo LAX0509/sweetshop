@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+
+<div class="admin-top">
+  <h1 class="admin-title">Panel de Control</h1>
+  <div class="admin-actions">
+    <a class="btn-primary" href="{{ url_for('admin_new_product') }}">Agregar producto</a>
+    <a class="btn-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+  </div>
+</div>
+
+<div class="admin-grid">
+
+  <section class="panel">
+    <h2 class="h2">Inventario</h2>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th class="center">Precio</th>
+            <th class="center">Stock</th>
+            <th class="right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td class="strong">
+              <div class="p-row">
+                <img class="p-img" src="{{ p.img }}" alt="{{ p.name }}">
+                <span>{{ p.name }}</span>
+              </div>
+            </td>
+            <td class="center">$ {{ "%.2f"|format(p.price) }}</td>
+            <td class="center">
+              <span class="badge">{{ p.stock }}</span>
+            </td>
+            <td class="right">
+              <div class="row-actions">
+
+                <form method="post" action="{{ url_for('admin_adjust_stock', product_id=p.id) }}" class="inline">
+                  <input type="hidden" name="delta" value="-1">
+                  <button class="btn-mini" type="submit">-1</button>
+                </form>
+
+                <form method="post" action="{{ url_for('admin_adjust_stock', product_id=p.id) }}" class="inline">
+                  <input type="hidden" name="delta" value="1">
+                  <button class="btn-mini" type="submit">+1</button>
+                </form>
+
+                <a class="btn-mini" href="{{ url_for('admin_edit_product', product_id=p.id) }}">Editar</a>
+
+                <form method="post" action="{{ url_for('admin_delete_product', product_id=p.id) }}" class="inline">
+                  <button class="btn-mini danger" type="submit">Eliminar</button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel panel-dark">
+    <h2 class="h2 panel-title-dark">Pedidos</h2>
+
+    <div class="orders">
+      {% for o in orders %}
+      <article class="order-card">
+        <div class="order-top">
+          <span class="order-id">Pedido #{{ o.id }}</span>
+          <span class="pill">{{ o.status }}</span>
+        </div>
+
+        <div class="order-body">
+          <div class="muted">Cliente: <span class="light">{{ o.cliente }}</span></div>
+          <div class="muted">Items: <span class="light">{{ o.productos }}</span></div>
+          <div class="muted">Dirección: <span class="light">{{ o.direccion }}</span></div>
+        </div>
+
+        <div class="order-bottom">
+          <span class="total">$ {{ "%.2f"|format(o.total) }}</span>
+
+          <form method="post" action="{{ url_for('admin_update_order_status', order_id=o.id) }}" class="status-form">
+            <select name="status" class="select">
+              {% for s in ["Pendiente de Envío","En preparación","Enviado","Entregado","Cancelado"] %}
+                <option value="{{ s }}" {% if o.status == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn-mini" type="submit">Guardar</button>
+          </form>
+        </div>
+      </article>
+      {% else %}
+      <div class="empty">No hay ventas registradas aún.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Tienda{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    <div>
+      <h1>Nuestra Dulce Selección</h1>
+      <p>Calidad premium para tus pruebas de Validación y Verificación</p>
+      <a class="browse" href="#catalogo">Browse Sweets</a>
+    </div>
+
+    <div class="img-wrap">
+      <img src="https://cdn-icons-png.flaticon.com/512/346/346195.png" alt="SweetShop">
+    </div>
+  </section>
+
+  <p class="section-title">Our most popular choice of retro sweets.</p>
+
+  <section id="catalogo" class="grid">
+    {% for p in products %}
+      <article class="card">
+        <img src="{{ p.img }}" alt="{{ p.name }}">
+
+        <div class="card-body">
+          <h3>{{ p.name }}</h3>
+          <p>Producto de prueba para el módulo de carrito y validaciones.</p>
+        </div>
+
+        <div class="meta">
+          <div class="price">$ {{ "%.2f"|format(p.price) }}</div>
+          <div class="stock">Stock {{ p.stock }}</div>
+        </div>
+
+        <div class="card-footer">
+          <form method="post" action="{{ url_for('add_to_cart') }}">
+            <input type="hidden" name="id" value="{{ p.id }}">
+            <input class="qty" type="number" name="quantity" min="1" max="{{ p.stock }}" value="1">
+            <button class="btn" type="submit">Add to Basket</button>
+          </form>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+{% endblock %}

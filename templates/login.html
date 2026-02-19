@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
+    
+    <div class="card" style="max-width: 400px; width: 100%; padding: 2.5rem; animation: fadeIn 0.6s ease-out;">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🔐</div>
+            <h2 style="font-weight: 800; color: #0f172a;">Acceso Admin</h2>
+            <p style="color: #64748b; font-size: 0.9rem;">Ingresa tus credenciales para gestionar la tienda</p>
+        </div>
+
+        <form action="/login" method="POST">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px;">
+                    Usuario
+                </label>
+                <input type="text" 
+                       name="username" 
+                       placeholder="AdminUser"
+                       style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-family: inherit; font-size: 1rem; transition: 0.3s;" 
+                       onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.1)'"
+                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+                       required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 8px;">
+                    Contraseña
+                </label>
+                <input type="password" 
+                       name="password" 
+                       placeholder="••••••••"
+                       style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-family: inherit; font-size: 1rem; transition: 0.3s;" 
+                       onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.1)'"
+                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+                       required>
+            </div>
+
+            <button type="submit" class="btn-add" style="padding: 12px; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);">
+                Entrar al Panel
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <a href="/" style="text-decoration: none; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+                ← Volver a la tienda
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

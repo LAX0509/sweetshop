@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SweetShop{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icono.png') }}">
+
+</head>
+<body>
+
+  <header class="navbar">
+  <div class="nav-inner">
+
+    <a class="brand" href="{{ url_for('index') }}">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" 
+           alt="Sweet Shop" 
+           class="logo">
+      <span class="brand-text">Sweet Shop</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="{{ url_for('index') }}">Tienda</a>
+      <a href="{{ url_for('cart') }}">Carrito</a>
+
+      {% if session.get('user') %}
+        <a href="{{ url_for('admin_panel') }}">Admin</a>
+        <a class="nav-cta" href="{{ url_for('logout') }}">Salir</a>
+      {% else %}
+        <a class="nav-cta" href="{{ url_for('login') }}">Admin Login</a>
+      {% endif %}
+    </nav>
+
+  </div>
+</header>
+
+  <main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
