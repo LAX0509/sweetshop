@@ -10,6 +10,11 @@ app = Flask(__name__)
 app.secret_key = "v&v_super_secret_key"
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///local.db")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
@@ -67,9 +72,16 @@ def init_db_and_seed():
     finally:
         db.close()
 
-@app.before_first_request
-def _startup():
+DB_READY = False
+
+@app.before_request
+def _startup_once():
+    global DB_READY
+    if DB_READY:
+        return
     init_db_and_seed()
+    DB_READY = True
+
 
 def login_required(f):
     @wraps(f)
